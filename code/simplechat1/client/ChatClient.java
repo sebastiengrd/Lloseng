@@ -66,6 +66,17 @@ public class ChatClient extends AbstractClient
   public void connectionClosed() {
     clientUI.display("Connection with server closed");
   }
+
+  /**
+   * This method overrides the one in the superclass. Called
+   * when an exception occures when connecting to the server.
+   * @param exception
+   */
+  public void connectionException(Exception exception) {
+    clientUI.display("An exception occured when trying to connect with server");
+  }
+
+
   /**
    * This method handles all data coming from the UI            
    *
