@@ -58,7 +58,14 @@ public class ChatClient extends AbstractClient
   {
     clientUI.display(msg.toString());
   }
-
+  
+  
+  /**
+   *  This method handle when the connection with the server closes
+   */
+  public void connectionClosed() {
+    clientUI.display("Connection with server closed");
+  }
   /**
    * This method handles all data coming from the UI            
    *
