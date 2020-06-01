@@ -50,8 +50,46 @@ public class EchoServer extends AbstractServer
    */
   public void handleMessageFromClientUI(String message)
   {
-    sendToAllClients(message);
-    clientUI.display(message);  
+    if(message.length()>0 && message.charAt(0) == '#'){
+      
+      if(message.equals("#quit")) {
+        quit();
+      } else if(message.equals("#stop")) {
+        stopListening();
+      } else if(message.equals("#close")) {
+        try {
+          close();
+        } catch (IOException e) {
+          clientUI.display("An error corrured. Could not close.");
+        }
+        
+      } else if(message.equals("#start")) {
+        try {
+          listen();
+        } catch (IOException e){
+          clientUI.display("Could not listen to new client");
+        }
+      } else if(message.equals("#getport")) {
+        clientUI.display("Port is " + getPort());
+
+      } else {
+        String[] parts = message.split(" ");
+        if (parts.length == 2 && parts[0].equals("#setport")) {
+          try {
+            setPort(Integer.parseInt(parts[1]));
+          } catch (NumberFormatException e) {
+            clientUI.display("Please enter a valid port number");
+          }
+        } else {
+          clientUI.display("Unknown command");
+        }
+      }
+
+
+    } else {
+      sendToAllClients(message);
+      clientUI.display(message);  
+    }
   }
 
 
@@ -110,16 +148,17 @@ public class EchoServer extends AbstractServer
     System.out.println("Client disconnected");
   }
 
+  public void quit()
+  {
+    try
+    {
+      close();
+    }
+    catch(IOException e) {}
+    System.exit(0);
+  }
   
-  //Class methods ***************************************************
-  
-  /**
-   * This method is responsible for the creation of 
-   * the server instance (there is no UI in this phase).
-   *
-   * @param args[0] The port number to listen on.  Defaults to 5555 
-   *          if no argument is entered.
-   */
+
 
 }
 //End of EchoServer class
