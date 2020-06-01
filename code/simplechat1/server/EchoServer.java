@@ -4,6 +4,9 @@
 package server;
 
 import java.io.*;
+
+//import com.lloseng.ocsf.server.ConnectionToClient;
+
 import ocsf.server.*;
 import common.*;
 
@@ -105,9 +108,19 @@ public class EchoServer extends AbstractServer
     
     if(split.length == 2 && split[0].equals("#login")) {
       client.setInfo("id", split[1]);
+      client.setInfo("idValidated", true);
     } else {
-      System.out.println("Message received: " + msg + " from " + client + " with id " + client.getInfo("id"));
-      sendToAllClients(client.getInfo("id") + " " + msg);
+      if((boolean)client.getInfo("idValidated") == true) {
+        System.out.println("Message received: " + msg + " from " + client + " with id " + client.getInfo("id"));
+        sendToAllClients(client.getInfo("id") + " " + msg);
+      } else {
+        try {
+          client.sendToClient("ERROR need to send id with the message #login <your_id>");
+          client.close();
+        } catch (IOException e) {
+          System.exit(1);
+        }
+      }
 
     }
 
