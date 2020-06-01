@@ -102,10 +102,13 @@ public class EchoServer extends AbstractServer
    * when a client disconnects.
    * @param client
    */
-  synchronized public void clientDisconnected(
-    ConnectionToClient client) {
-      System.out.println("A client disconnected");
-    }
+  synchronized public void clientDisconnected(ConnectionToClient client) {
+    System.out.println("Client disconnected");
+  }
+
+  synchronized public void clientException(ConnectionToClient client, Throwable exception) {
+    System.out.println("Client disconnected");
+  }
 
   
   //Class methods ***************************************************
