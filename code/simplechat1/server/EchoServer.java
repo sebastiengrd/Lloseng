@@ -50,6 +50,7 @@ public class EchoServer extends AbstractServer
    */
   public void handleMessageFromClientUI(String message)
   {
+    sendToAllClients(message);
     clientUI.display(message);  
   }
 
