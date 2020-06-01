@@ -1,9 +1,12 @@
 // This file contains material supporting section 3.7 of the textbook:
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at www.lloseng.com 
+package server;
 
 import java.io.*;
 import ocsf.server.*;
+import common.*;
+
 
 /**
  * This class overrides some of the methods in the abstract 
@@ -18,11 +21,11 @@ import ocsf.server.*;
 public class EchoServer extends AbstractServer 
 {
   //Class variables *************************************************
-  
   /**
-   * The default port to listen on.
+   * The interface type variable.  It allows the implementation of 
+   * the display method in the client.
    */
-  final public static int DEFAULT_PORT = 5555;
+  ChatIF clientUI;
   
   //Constructors ****************************************************
   
@@ -31,14 +34,26 @@ public class EchoServer extends AbstractServer
    *
    * @param port The port number to connect on.
    */
-  public EchoServer(int port) 
+  public EchoServer(int port, ChatIF clientUI) 
   {
     super(port);
+    this.clientUI = clientUI;
   }
 
   
   //Instance methods ************************************************
-  
+
+/**
+   * This method handles all data coming from the UI            
+   *
+   * @param message The message from the UI.    
+   */
+  public void handleMessageFromClientUI(String message)
+  {
+    clientUI.display(message);  
+  }
+
+
   /**
    * This method handles any messages received from the client.
    *
@@ -101,29 +116,6 @@ public class EchoServer extends AbstractServer
    * @param args[0] The port number to listen on.  Defaults to 5555 
    *          if no argument is entered.
    */
-  public static void main(String[] args) 
-  {
-    int port = 0; //Port to listen on
 
-    try
-    {
-      port = Integer.parseInt(args[0]); //Get port from command line
-    }
-    catch(Throwable t)
-    {
-      port = DEFAULT_PORT; //Set port to 5555
-    }
-	
-    EchoServer sv = new EchoServer(port);
-    
-    try 
-    {
-      sv.listen(); //Start listening for connections
-    } 
-    catch (Exception ex) 
-    {
-      System.out.println("ERROR - Could not listen for clients!");
-    }
-  }
 }
 //End of EchoServer class
