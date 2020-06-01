@@ -74,6 +74,7 @@ public class ChatClient extends AbstractClient
    */
   public void connectionException(Exception exception) {
     clientUI.display("An exception occured when trying to connect with server");
+    quit();
   }
 
 
