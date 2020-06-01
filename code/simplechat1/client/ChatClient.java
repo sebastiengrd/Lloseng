@@ -80,6 +80,20 @@ public class ChatClient extends AbstractClient
   }
 
 
+
+  /**
+   * This method overrides the one in the superclass. Called
+   * when the connection with a server is established.
+   */
+  protected void connectionEstablished() {
+    try {
+      sendToServer("#login " + String.valueOf(loginId));
+    } catch (IOException e){
+      quit();
+    }
+	}
+
+
   /**
    * This method handles all data coming from the UI            
    *
