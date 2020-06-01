@@ -99,11 +99,18 @@ public class EchoServer extends AbstractServer
    * @param msg The message received from the client.
    * @param client The connection from which the message originated.
    */
-  public void handleMessageFromClient
-    (Object msg, ConnectionToClient client)
-  {
-    System.out.println("Message received: " + msg + " from " + client);
-    this.sendToAllClients(msg);
+  public void handleMessageFromClient(Object msg, ConnectionToClient client) {
+
+    String[] split = ((String)msg).split(" ");
+    
+    if(split.length == 2 && split[0].equals("#login")) {
+      client.setInfo("id", split[1]);
+    } else {
+      System.out.println("Message received: " + msg + " from " + client + " with id " + client.getInfo("id"));
+      sendToAllClients(client.getInfo("id") + " " + msg);
+
+    }
+
   }
     
   /**
