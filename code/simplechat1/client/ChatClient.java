@@ -84,15 +84,53 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromClientUI(String message)
   {
-    try
-    {
-      sendToServer(message);
-    }
-    catch(IOException e)
-    {
-      clientUI.display
-        ("Could not send message to server.  Terminating client.");
-      quit();
+    if(message.length()>0 && message.charAt(0) == '#'){
+      
+      if(message.equals("#quit")) {
+        quit();
+      } else if(message.equals("#logoff")) {
+        try {
+          closeConnection();
+        } catch (IOException e) {
+          clientUI.display("Exception occured. Cannot logoff");
+        }
+      } else if(message.equals("#login")) {
+        try {
+          openConnection();
+        } catch (IOException e) {
+          clientUI.display("Exception occured. Cannot login");
+        }
+      } else if(message.equals("#gethost")) {
+        clientUI.display("current host is : " + getHost());
+      } else if(message.equals("#getport")) {
+        clientUI.display("current port is : " + getPort());
+      } else {
+        String[] parts = message.split(" ");
+        if (parts.length == 2 && parts[0].equals("#sethost")) {
+          setHost(parts[1]);
+        } else if(parts.length == 2 && parts[0].equals("#setport")){
+          try {
+            setPort(Integer.parseInt(parts[1]));
+          } catch (NumberFormatException e) {
+            clientUI.display("Please enter a valid port number");
+          }
+        } else {
+          clientUI.display("Unknown command");
+        }
+      }
+
+
+    } else {
+      try
+      {
+        sendToServer(message);
+      }
+      catch(IOException e)
+      {
+        clientUI.display
+          ("Could not send message to server.  Terminating client.");
+        quit();
+      }
     }
   }
   
