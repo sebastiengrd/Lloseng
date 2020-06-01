@@ -5,6 +5,8 @@ package server;
 
 import java.io.*;
 
+// import com.lloseng.ocsf.server.ConnectionToClient;
+
 //import com.lloseng.ocsf.server.ConnectionToClient;
 
 import ocsf.server.*;
@@ -104,14 +106,16 @@ public class EchoServer extends AbstractServer
    */
   public void handleMessageFromClient(Object msg, ConnectionToClient client) {
 
+    System.out.println("Message received: " + msg + " from " + client + " with id " + client.getInfo("id"));
+
     String[] split = ((String)msg).split(" ");
     
     if(split.length == 2 && split[0].equals("#login")) {
       client.setInfo("id", split[1]);
       client.setInfo("idValidated", true);
+      sendToAllClients(split[1] + " has logged on.");
     } else {
       if((boolean)client.getInfo("idValidated") == true) {
-        System.out.println("Message received: " + msg + " from " + client + " with id " + client.getInfo("id"));
         sendToAllClients(client.getInfo("id") + " " + msg);
       } else {
         try {
@@ -152,7 +156,7 @@ public class EchoServer extends AbstractServer
    * @param client
    */
   public void clientConnected(ConnectionToClient client) {
-    System.out.println("New client connected");
+    System.out.println("A new client is attempting to connect to the server.");
   }
 
   /**

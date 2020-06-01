@@ -50,9 +50,7 @@ public class ClientConsole implements ChatIF
     } 
     catch(IOException exception) 
     {
-      System.out.println("Error: Can't setup connection!"
-                + " Terminating client.");
-      System.exit(1);
+      System.out.println("Cannot open connection.  Awaiting command.");
     }
   }
 
@@ -114,10 +112,10 @@ public class ClientConsole implements ChatIF
     }
     catch(ArrayIndexOutOfBoundsException e)
     {
-      System.out.println("Login Id Mandatory");
+      System.out.println("The client reports it cannot connect without a login by displaying:");
       System.exit(1);
     } catch(NumberFormatException e) {
-      System.out.println("Login Id Mandatory");
+      System.out.println("The client reports it cannot connect without a login by displaying");
       System.exit(1);
     }
 
