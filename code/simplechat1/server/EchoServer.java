@@ -60,6 +60,7 @@ public class EchoServer extends AbstractServer
       if(message.equals("#quit")) {
         quit();
       } else if(message.equals("#stop")) {
+        sendToAllClients("WARNING - Server has stopped listening for connections.");
         stopListening();
       } else if(message.equals("#close")) {
         try {
@@ -165,7 +166,7 @@ public class EchoServer extends AbstractServer
    * @param client
    */
   synchronized public void clientDisconnected(ConnectionToClient client) {
-    System.out.println("Client disconnected");
+    System.out.println("Client " + client.getInfo("id") + " disconnected");
   }
 
   synchronized public void clientException(ConnectionToClient client, Throwable exception) {

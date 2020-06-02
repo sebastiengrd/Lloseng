@@ -44,14 +44,8 @@ public class ClientConsole implements ChatIF
    */
   public ClientConsole(int loginId, String host, int port) 
   {
-    try 
-    {
-      client= new ChatClient(loginId, host, port, this);
-    } 
-    catch(IOException exception) 
-    {
-      System.out.println("Cannot open connection.  Awaiting command.");
-    }
+    client= new ChatClient(loginId, host, port, this);
+
   }
 
   
@@ -78,7 +72,7 @@ public class ClientConsole implements ChatIF
     catch (Exception ex) 
     {
       System.out.println
-        ("Unexpected error while reading from console!");
+        ("Unexpected error while reading from console! ");
     }
   }
 
