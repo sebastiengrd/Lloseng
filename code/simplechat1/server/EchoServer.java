@@ -167,10 +167,13 @@ public class EchoServer extends AbstractServer
    */
   synchronized public void clientDisconnected(ConnectionToClient client) {
     System.out.println("Client " + client.getInfo("id") + " disconnected");
+    sendToAllClients("Client " + client.getInfo("id") + " disconnected");
+
   }
 
   synchronized public void clientException(ConnectionToClient client, Throwable exception) {
-    System.out.println("Client disconnected");
+    System.out.println("Client " + client.getInfo("id") + " disconnected");
+    sendToAllClients("Client " + client.getInfo("id") + " disconnected");
   }
 
   public void quit()
