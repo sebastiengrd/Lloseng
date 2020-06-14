@@ -26,6 +26,7 @@ public class ChatClient extends AbstractClient
    * the display method in the client.
    */
   ChatIF clientUI; 
+  int loginId;
 
   
   //Constructors ****************************************************
@@ -38,12 +39,16 @@ public class ChatClient extends AbstractClient
    * @param clientUI The interface type variable.
    */
   
-  public ChatClient(String host, int port, ChatIF clientUI) 
-    throws IOException 
-  {
+  public ChatClient(int loginId, String host, int port, ChatIF clientUI) {
     super(host, port); //Call the superclass constructor
+    this.loginId = loginId;
     this.clientUI = clientUI;
-    openConnection();
+    try {
+      openConnection();
+    } catch(IOException exception) 
+    {
+      System.out.println("Cannot open connection.  Awaiting command.");
+    }
   }
 
   
@@ -58,6 +63,40 @@ public class ChatClient extends AbstractClient
   {
     clientUI.display(msg.toString());
   }
+  
+  
+  /**
+   *  This method handle when the connection with the server closes
+   */
+  public void connectionClosed() {
+    clientUI.display("Connection with server closed");
+  }
+
+  /**
+   * This method overrides the one in the superclass. Called
+   * when an exception occures when connecting to the server.
+   * @param exception
+   */
+  public void connectionException(Exception exception) {
+    clientUI.display("An exception occured when trying to connect with server");
+    // quit();
+    connectionClosed();
+  }
+
+
+
+  /**
+   * This method overrides the one in the superclass. Called
+   * when the connection with a server is established.
+   */
+  protected void connectionEstablished() {
+    try {
+      sendToServer("#login " + String.valueOf(loginId));
+    } catch (IOException e){
+      quit();
+    }
+	}
+
 
   /**
    * This method handles all data coming from the UI            
@@ -66,15 +105,57 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromClientUI(String message)
   {
-    try
-    {
-      sendToServer(message);
+    if (clientUI == null) {
+      System.out.println("Null message");
+      return;
     }
-    catch(IOException e)
-    {
-      clientUI.display
-        ("Could not send message to server.  Terminating client.");
-      quit();
+    if(message.length()>0 && message.charAt(0) == '#'){
+      
+      if(message.equals("#quit")) {
+        quit();
+      } else if(message.equals("#logoff")) {
+        try {
+          closeConnection();
+        } catch (IOException e) {
+          clientUI.display("Exception occured. Cannot logoff");
+        }
+      } else if(message.equals("#login")) {
+        try {
+          openConnection();
+        } catch (IOException e) {
+          clientUI.display("Exception occured. Cannot login");
+        }
+      } else if(message.equals("#gethost")) {
+        clientUI.display("current host is : " + getHost());
+      } else if(message.equals("#getport")) {
+        clientUI.display("current port is : " + getPort());
+      } else {
+        String[] parts = message.split(" ");
+        if (parts.length == 2 && parts[0].equals("#sethost")) {
+          setHost(parts[1]);
+        } else if(parts.length == 2 && parts[0].equals("#setport")){
+          try {
+            setPort(Integer.parseInt(parts[1]));
+          } catch (NumberFormatException e) {
+            clientUI.display("Please enter a valid port number");
+          }
+        } else {
+          clientUI.display("Unknown command");
+        }
+      }
+
+
+    } else {
+      try
+      {
+        sendToServer(message);
+      }
+      catch(IOException e)
+      {
+        clientUI.display
+          ("Could not send message to server.  Terminating client.");
+        quit();
+      }
     }
   }
   
